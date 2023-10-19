@@ -1,0 +1,9 @@
+my_small_dwh:
+  - database: postgres
+    - schema_name: financial
+      tables:
+        - table_name_mask: fact_bank_transactions
+          exclude_columns:
+            - amount
+        - table_name_mask: dim_*
+    - schema_name: financial
