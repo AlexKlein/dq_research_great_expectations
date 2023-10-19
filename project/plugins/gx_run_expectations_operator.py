@@ -5,7 +5,7 @@ import os
 
 from run_expectations_plugin import (
     create_database_connection,
-    get_dataset_table_and_expectation_paths_from_expectation_folder,
+    get_schema_table_and_expectation_paths_from_expectation_folder,
     load_custom_expectations,
     fetch_data_from_database,
     update_suite_expectations,
@@ -39,7 +39,7 @@ class GXRunExpectationsOperator(BaseOperator):
         context = gx.get_context()
         suite = get_or_create_expectation_suite(context, self.suite_name)
 
-        for schema, table, expectations_path in get_dataset_table_and_expectation_paths_from_expectation_folder():
+        for schema, table, expectations_path in get_schema_table_and_expectation_paths_from_expectation_folder():
 
             custom_expectations = load_custom_expectations(expectations_path)
             custom_query = custom_expectations.get("custom_query")
@@ -61,3 +61,7 @@ class GXRunExpectationsOperator(BaseOperator):
                     self.log.info(f"Executed: {result['statement'][:100]}... SUCCESS")
                 else:
                     self.log.error(f"Failed: {result['statement'][:100]}... {result['status']}")
+
+            conn.commit()
+            cur.close()
+            conn.close()

@@ -34,7 +34,6 @@ dag_config = {
     'default_args': DEFAULT_ARGS,
     'description': 'An Airflow DAG to run GX expectations',
     'schedule_interval': '30 8 * * MON',
-    "timezone": "Europe/Amsterdam",
     'max_active_runs': 1,
     'catchup': False,
     'start_date': datetime(2023, 10, 9)

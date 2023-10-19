@@ -7,7 +7,7 @@ from great_expectations.core import ExpectationConfiguration
 # Configuration constants
 SUITE_NAME = "my_dq_suite"
 VALIDATION_RESULTS_TABLE_NAME = "data_quality.gx_validation_results"
-INCLUDE_PASSED_CHECKS = True
+ONLY_RETURN_FAILURES = False
 
 RUN_ENV = os.environ.get('RUN_ENV', 'local')
 
@@ -210,7 +210,7 @@ def update_suite_expectations(suite, expectations):
 
 def run_great_expectations_checks(df, suite):
     """Validate data against the specified expectations and print results."""
-    return df.validate(expectation_suite=suite, only_return_failures=True, result_format='COMPLETE')
+    return df.validate(expectation_suite=suite, only_return_failures=ONLY_RETURN_FAILURES, result_format='COMPLETE')
 
 
 def execute_sql_statements(cur, sql_statements):
@@ -219,7 +219,7 @@ def execute_sql_statements(cur, sql_statements):
 
     for statement in sql_statements:
         try:
-            cur.execute(statement)  # Running the query
+            cur.execute(statement)
             results.append({"statement": statement, "status": "SUCCESS"})
         except Exception as e:
             results.append({"statement": statement, "status": str(e)})

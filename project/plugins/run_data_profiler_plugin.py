@@ -17,7 +17,11 @@ EXCLUDE_EXPECTATION_TYPES = [
     "expect_column_values_to_be_between",
     "expect_column_quantile_values_to_be_between",
     "expect_column_median_to_be_between",
-    "expect_column_mean_to_be_between"
+    "expect_column_mean_to_be_between",
+    "expect_column_min_to_be_between",
+    "expect_column_max_to_be_between",
+    "expect_column_stdev_to_be_between",
+    "expect_column_proportion_of_unique_values_to_be_between"
 ]
 
 
@@ -26,10 +30,10 @@ def load_profiling_config(file_path=PROFILER_CONFIG):
         return yaml.safe_load(stream)
 
 
-def create_database_connection():
+def create_database_connection(database_name):
     """Create a connection to the PostgreSQL database."""
     conn = psycopg2.connect(
-        dbname='postgres',
+        dbname=database_name,
         user='postgres',
         password='postgres',
         host='my_small_dwh',
@@ -46,7 +50,7 @@ def get_partition_filter(cur, table_name):
         SELECT 
             CASE
             WHEN data_type IN ('date', 'timestamp without time zone', 'timestamp with time zone')
-            THEN 'WHERE CAST('||column_name||' AS DATE) = DATE_TRUNC(''MONTH'', CURRENT_DATE)'
+            THEN 'WHERE CAST('||column_name||' AS DATE) = CAST(DATE_TRUNC(''MONTH'', CURRENT_DATE) AS DATE)'
             ELSE 'WHERE FALSE'
             END AS table_filter
 
@@ -159,19 +163,19 @@ def fetch_data_and_create_batch_request(cur, table_name):
 def profile_data():
     """Run the profiler, generate an expectation suite, and save it."""
     config = load_profiling_config()
-    conn = create_database_connection()
-    cur = conn.cursor()
 
     context = gx.get_context()
     setup_datasource(context)
 
-    for expectations_config in config["my_small_dwh"]:
-        database_name = expectations_config["database"]
+    for db_config in config:
+        database_name = db_config["database"]
+        conn = create_database_connection(database_name)
+        cur = conn.cursor()
 
-        for schema_config in expectations_config["schema_name"]:
+        for schema_config in db_config["schemas"]:
             schema_name = schema_config.get('schema_name')
 
-            for table_config in expectations_config["tables"]:
+            for table_config in schema_config["tables"]:
                 table_name_or_mask = table_config.get('table_name_mask')
                 exclude_columns = table_config.get('exclude_columns', [])
 

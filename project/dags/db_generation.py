@@ -12,7 +12,7 @@ MODULE_PATH = '/opt/airflow/db_generator/generator.py'
 MODULE_NAME = 'generator'
 
 DEFAULT_ARGS = {
-    'owner': 'Data-Governance',
+    'owner': 'aleksandr.klein',
     'depends_on_past': False,
     'email_on_failure': False,
     'email_on_retry': False
@@ -34,7 +34,7 @@ dag_config = {
     'dag_id': 'db_generation',
     'default_args': DEFAULT_ARGS,
     'description': 'An Airflow DAG to run DB generator',
-    'schedule_interval': '30 8 * * *',
+    'schedule_interval': None,
     'max_active_runs': 1,
     'catchup': False,
     'start_date': datetime(2023, 10, 9)

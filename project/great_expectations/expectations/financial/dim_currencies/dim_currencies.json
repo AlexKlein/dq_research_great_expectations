@@ -1,0 +1,127 @@
+{
+  "data_asset_type": "Dataset",
+  "expectation_suite_name": "dim_currencies_custom_suit",
+  "!custom_query": "select dc.* from financial.dim_currencies dc left join  financial.fact_bank_transactions fba on fba.currency_id + 1 = dc.id where fba.id is null;",
+  "!filter": "currency_name not in ('EUR', 'USD', 'GBP')",
+  "expectations": [
+    {
+      "expectation_type": "expect_table_columns_to_match_set",
+      "kwargs": {
+        "column_set": [
+          "currency_name",
+          "id"
+        ],
+        "exact_match": null
+      },
+      "meta": {
+        "profiler_details": {
+          "success_ratio": 1.0
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column_values.unique.unexpected_count",
+            "domain_kwargs": {
+              "column": "id"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": {
+        "column": "currency_name"
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column_values.unique.unexpected_count",
+            "domain_kwargs": {
+              "column": "currency_name"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column_values.nonnull.unexpected_count",
+            "domain_kwargs": {
+              "column": "id"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "currency_name"
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column_values.nonnull.unexpected_count",
+            "domain_kwargs": {
+              "column": "currency_name"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_value_lengths_to_be_between",
+      "kwargs": {
+        "min_value": 3,
+        "max_value": 3,
+        "column": "currency_name"
+      },
+      "meta": {
+        "profiler_details": {
+          "column_min_length_range_estimator": {
+            "metric_configuration": {
+              "metric_name": "column_values.length.min",
+              "domain_kwargs": {
+                "column": "currency_name"
+              },
+              "metric_value_kwargs": null
+            },
+            "num_batches": 1
+          },
+          "column_max_length_range_estimator": {
+            "metric_configuration": {
+              "metric_name": "column_values.length.max",
+              "domain_kwargs": {
+                "column": "currency_name"
+              },
+              "metric_value_kwargs": null
+            },
+            "num_batches": 1
+          }
+        }
+      }
+    }
+  ]
+}

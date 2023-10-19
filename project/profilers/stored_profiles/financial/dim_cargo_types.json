@@ -1,0 +1,229 @@
+{
+  "expectation_suite_name": "my_profiler_suite",
+  "ge_cloud_id": null,
+  "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "min_value": 5,
+        "max_value": 5
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "table.row_count",
+            "domain_kwargs": {},
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_table_columns_to_match_set",
+      "kwargs": {
+        "exact_match": null,
+        "column_set": [
+          "id",
+          "cargo_type_name"
+        ]
+      },
+      "meta": {
+        "profiler_details": {
+          "success_ratio": 1.0
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column_values.unique.unexpected_count",
+            "domain_kwargs": {
+              "column": "id"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": {
+        "column": "cargo_type_name"
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column_values.unique.unexpected_count",
+            "domain_kwargs": {
+              "column": "cargo_type_name"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column_values.nonnull.unexpected_count",
+            "domain_kwargs": {
+              "column": "id"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "cargo_type_name"
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column_values.nonnull.unexpected_count",
+            "domain_kwargs": {
+              "column": "cargo_type_name"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_value_lengths_to_be_between",
+      "kwargs": {
+        "min_value": 7,
+        "max_value": 15,
+        "strict_max": false,
+        "column": "cargo_type_name",
+        "mostly": 1.0,
+        "strict_min": false
+      },
+      "meta": {
+        "profiler_details": {
+          "column_min_length_range_estimator": {
+            "metric_configuration": {
+              "metric_name": "column_values.length.min",
+              "domain_kwargs": {
+                "column": "cargo_type_name"
+              },
+              "metric_value_kwargs": null
+            },
+            "num_batches": 1
+          },
+          "column_max_length_range_estimator": {
+            "metric_configuration": {
+              "metric_name": "column_values.length.max",
+              "domain_kwargs": {
+                "column": "cargo_type_name"
+              },
+              "metric_value_kwargs": null
+            },
+            "num_batches": 1
+          }
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_match_regex",
+      "kwargs": {
+        "column": "cargo_type_name",
+        "regex": "[A-Za-z0-9\\.,;:!?()\\\"'%\\-]+",
+        "mostly": 1.0
+      },
+      "meta": {
+        "profiler_details": {
+          "success_ratio": 1.0,
+          "evaluated_regexes": {
+            "[A-Za-z0-9\\.,;:!?()\\\"'%\\-]+": 1.0,
+            "<\\/?(?:p|a|b|img)(?: \\/)?>": 0.0,
+            "\\d+": 0.0,
+            "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,255}\\.[a-z]{2,6}\\b(?:[-a-zA-Z0-9@:%_\\+.~#()?&//=]*)": 0.0,
+            "\\s+$": 0.0,
+            "-?\\d+": 0.0,
+            "\\b[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}-[0-5][0-9a-fA-F]{3}-[089ab][0-9a-fA-F]{3}-\\b[0-9a-fA-F]{12}\\b ": 0.0,
+            "(?:25[0-5]|2[0-4]\\d|[01]\\d{2}|\\d{1,2})(?:.(?:25[0-5]|2[0-4]\\d|[01]\\d{2}|\\d{1,2})){3}": 0.0,
+            "-?\\d+(?:\\.\\d*)?": 0.0,
+            "^\\s+": 0.0
+          }
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "cargo_type_name",
+        "mostly": 1.0,
+        "value_set": [
+          "Electronics",
+          "Groceries",
+          "Machinery",
+          "Apparel",
+          "Pharmaceuticals"
+        ]
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column.distinct_values",
+            "domain_kwargs": {
+              "column": "cargo_type_name"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1,
+          "parse_strings_as_datetimes": false
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_unique_value_count_to_be_between",
+      "kwargs": {
+        "min_value": 5,
+        "max_value": 5,
+        "strict_max": false,
+        "column": "cargo_type_name",
+        "strict_min": false
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column.distinct_values.count",
+            "domain_kwargs": {
+              "column": "cargo_type_name"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    }
+  ],
+  "data_asset_type": null,
+  "meta": {
+    "great_expectations_version": "0.17.22",
+    "citations": [
+      {
+        "citation_date": "2023-10-19T13:57:13.748635Z",
+        "comment": "Created by effective Rule-Based Profiler of OnboardingDataAssistant with the configuration included.\n"
+      }
+    ]
+  }
+}

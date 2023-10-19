@@ -60,6 +60,7 @@ services:
       - ./plugins:/opt/airflow/plugins
       - ./logs:/opt/airflow/logs
       - ./profilers:/opt/airflow/profilers
+      - ./db_generator:/opt/airflow/db_generator
       - ./great_expectations:/opt/airflow/great_expectations
     command: webserver
 
@@ -91,5 +92,6 @@ services:
       - ./plugins:/opt/airflow/plugins
       - ./logs:/opt/airflow/logs
       - ./profilers:/opt/airflow/profilers
+      - ./db_generator:/opt/airflow/db_generator
       - ./great_expectations:/opt/airflow/great_expectations
     command: scheduler

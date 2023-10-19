@@ -1,0 +1,314 @@
+{
+  "expectation_suite_name": "my_profiler_suite",
+  "ge_cloud_id": null,
+  "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "min_value": 42,
+        "max_value": 42
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "table.row_count",
+            "domain_kwargs": {},
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_table_columns_to_match_set",
+      "kwargs": {
+        "exact_match": null,
+        "column_set": [
+          "id",
+          "distance_travelled",
+          "ship_type_id",
+          "destination_city_id",
+          "travel_date",
+          "company_id",
+          "origin_city_id"
+        ]
+      },
+      "meta": {
+        "profiler_details": {
+          "success_ratio": 1.0
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column_values.unique.unexpected_count",
+            "domain_kwargs": {
+              "column": "id"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": {
+        "column": "distance_travelled"
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column_values.unique.unexpected_count",
+            "domain_kwargs": {
+              "column": "distance_travelled"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column_values.nonnull.unexpected_count",
+            "domain_kwargs": {
+              "column": "id"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "travel_date"
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column_values.nonnull.unexpected_count",
+            "domain_kwargs": {
+              "column": "travel_date"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "distance_travelled"
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column_values.nonnull.unexpected_count",
+            "domain_kwargs": {
+              "column": "distance_travelled"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "travel_date",
+        "mostly": 1.0,
+        "value_set": [
+          "2022-06-29",
+          "2023-01-18",
+          "2022-03-11",
+          "2021-11-26",
+          "2022-05-05",
+          "2022-12-22",
+          "2021-12-07",
+          "2023-02-16",
+          "2021-10-26",
+          "2023-03-30",
+          "2022-01-15",
+          "2023-06-01",
+          "2022-01-16",
+          "2022-07-24",
+          "2023-07-31",
+          "2023-04-18",
+          "2023-10-15",
+          "2023-10-08",
+          "2022-08-08",
+          "2023-03-09",
+          "2022-12-16",
+          "2022-09-02",
+          "2022-07-12",
+          "2022-11-22",
+          "2022-01-19",
+          "2022-12-26",
+          "2022-01-11",
+          "2022-10-12",
+          "2023-01-01",
+          "2022-07-18",
+          "2023-01-22",
+          "2022-06-11",
+          "2023-04-11",
+          "2021-10-20",
+          "2022-05-27",
+          "2022-06-03",
+          "2022-07-16",
+          "2023-05-16",
+          "2021-12-26",
+          "2022-11-01",
+          "2022-04-10"
+        ]
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column.distinct_values",
+            "domain_kwargs": {
+              "column": "travel_date"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1,
+          "parse_strings_as_datetimes": false
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_unique_value_count_to_be_between",
+      "kwargs": {
+        "min_value": 41,
+        "max_value": 41,
+        "strict_max": false,
+        "column": "travel_date",
+        "strict_min": false
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column.distinct_values.count",
+            "domain_kwargs": {
+              "column": "travel_date"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "distance_travelled",
+        "mostly": 1.0,
+        "value_set": [
+          2294.51,
+          3559.33,
+          2515.78,
+          3213.69,
+          2692.57,
+          1551.44,
+          1845.86,
+          4687.41,
+          1023.95,
+          1677.24,
+          2543.71,
+          4260.81,
+          1480.98,
+          1604.92,
+          2213.81,
+          3098.63,
+          3456.83,
+          3559.72,
+          2250.36,
+          3468.33,
+          1531.59,
+          4080.47,
+          704.62,
+          3189.22,
+          3518.0,
+          2690.47,
+          3321.85,
+          3530.75,
+          1056.21,
+          1477.01,
+          2881.7,
+          3361.53,
+          3136.33,
+          3025.89,
+          3051.69,
+          1276.37,
+          3589.74,
+          1840.91,
+          4898.73,
+          3215.99,
+          2044.25,
+          3499.29
+        ]
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column.distinct_values",
+            "domain_kwargs": {
+              "column": "distance_travelled"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1,
+          "parse_strings_as_datetimes": false
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_unique_value_count_to_be_between",
+      "kwargs": {
+        "min_value": 42,
+        "max_value": 42,
+        "strict_max": false,
+        "column": "distance_travelled",
+        "strict_min": false
+      },
+      "meta": {
+        "profiler_details": {
+          "metric_configuration": {
+            "metric_name": "column.distinct_values.count",
+            "domain_kwargs": {
+              "column": "distance_travelled"
+            },
+            "metric_value_kwargs": null
+          },
+          "num_batches": 1
+        }
+      }
+    }
+  ],
+  "data_asset_type": null,
+  "meta": {
+    "great_expectations_version": "0.17.22",
+    "citations": [
+      {
+        "citation_date": "2023-10-19T13:57:28.573473Z",
+        "comment": "Created by effective Rule-Based Profiler of OnboardingDataAssistant with the configuration included.\n"
+      }
+    ]
+  }
+}
