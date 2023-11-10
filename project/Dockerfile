@@ -28,9 +28,12 @@ RUN chmod 777 /opt/airflow/great_expectations
 # Switch back to the default Airflow user
 USER airflow
 
+# Copy requirements.txt into the Docker container
+COPY requirements.txt /opt/airflow/requirements.txt
+
 # Install needed Python packages
 RUN pip install --upgrade pip \
- && pip install great_expectations psycopg2 sqlalchemy
+ && pip install -r /opt/airflow/requirements.txt
 
 # Copy your dags folder to the container
 COPY dags /opt/airflow/dags

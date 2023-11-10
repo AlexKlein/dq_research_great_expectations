@@ -3,18 +3,9 @@ from airflow.utils.decorators import apply_defaults
 import great_expectations as gx
 import os
 
-from run_expectations_plugin import (
-    create_database_connection,
-    get_schema_table_and_expectation_paths_from_expectation_folder,
-    load_custom_expectations,
-    fetch_data_from_database,
-    update_suite_expectations,
-    run_great_expectations_checks,
-    generate_sql_inserts,
-    execute_sql_statements,
-    get_or_create_expectation_suite,
-    parse_gx_result
-)
+import run_expectations_plugin as expectation_plugin
+import process_validations_plugins as validations_plugin
+import process_files_plugin as file_plugin
 
 
 class GXRunExpectationsOperator(BaseOperator):
@@ -23,7 +14,7 @@ class GXRunExpectationsOperator(BaseOperator):
     def __init__(
         self,
         ge_root_dir='/opt/airflow/great_expectations',
-        suite_name="my_dq_suite",
+        suite_name="data_validation_suite",
         *args, **kwargs
     ):
         super(GXRunExpectationsOperator, self).__init__(*args, **kwargs)
@@ -31,37 +22,55 @@ class GXRunExpectationsOperator(BaseOperator):
         self.suite_name = suite_name
 
     def execute(self, context):
-
+        """Main execution method for the Airflow operator."""
         os.chdir(self.ge_root_dir)
 
-        conn = create_database_connection()
+        conn = validations_plugin.create_database_connection()
         cur = conn.cursor()
         context = gx.get_context()
-        suite = get_or_create_expectation_suite(context, self.suite_name)
 
-        for schema, table, expectations_path in get_schema_table_and_expectation_paths_from_expectation_folder():
+        for schema, table, expectations_path in file_plugin.get_schema_table_and_expectation_paths():
+            custom_expectations = file_plugin.load_custom_expectations(expectations_path)
 
-            custom_expectations = load_custom_expectations(expectations_path)
-            custom_query = custom_expectations.get("custom_query")
-            filter = custom_expectations.get("filter")
+            validation_results = self._process_and_run_expectations(context, custom_expectations, schema, table)
+            self._ingest_results_into_database(cur, validation_results, schema, table)
 
-            df_data = fetch_data_from_database(cur, schema, table, custom_query=custom_query, filter=filter)
-            df = gx.dataset.PandasDataset(df_data)
+        conn.commit()
+        cur.close()
+        conn.close()
 
-            update_suite_expectations(suite, custom_expectations['expectations'])
-            results = run_great_expectations_checks(df, suite)
+    def _process_and_run_expectations(self, context, custom_expectations, schema, table):
+        """Process the custom expectations and run them using Great Expectations."""
+        custom_query = custom_expectations.get("custom_query")
+        custom_filter = custom_expectations.get("custom_filter")
 
-            parsed_results = parse_gx_result(results)
-            insert_statements = generate_sql_inserts(parsed_results)
+        suite = expectation_plugin.get_or_create_expectation_suite(context, self.suite_name)
+        expectation_plugin.update_suite_expectations(suite, custom_expectations['expectations'])
+        context.save_expectation_suite(suite)
 
-            execution_results = execute_sql_statements(cur, insert_statements)
+        batch_request = expectation_plugin.create_batch_request(
+            schema=schema,
+            table=table,
+            custom_query=custom_query,
+            custom_filter=custom_filter
+        )
+        expectation_plugin.setup_datasource(context)
 
-            for result in execution_results:
-                if result["status"] == "SUCCESS":
-                    self.log.info(f"Executed: {result['statement'][:100]}... SUCCESS")
-                else:
-                    self.log.error(f"Failed: {result['statement'][:100]}... {result['status']}")
+        return expectation_plugin.create_and_run_checkpoint(
+            context=context,
+            batch_request=batch_request,
+            suite_name=self.suite_name,
+        )
 
-            conn.commit()
-            cur.close()
-            conn.close()
+    def _ingest_results_into_database(self, cur, validation_results, schema, table):
+        """Ingest the results into the database."""
+        parsed_results = validations_plugin.parse_gx_result(validation_results)
+        insert_statements = validations_plugin.generate_sql_inserts(parsed_results, schema, table)
+
+        execution_results = validations_plugin.execute_sql_statements(cur, insert_statements)
+
+        for result in execution_results:
+            if result["status"] == "SUCCESS":
+                self.log.info(f"Executed: {result['statement'][:100]}... SUCCESS")
+            else:
+                self.log.error(f"Failed: {result['statement'][:100]}... {result['status']}")

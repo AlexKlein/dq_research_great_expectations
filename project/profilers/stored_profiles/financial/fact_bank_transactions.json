@@ -1,5 +1,5 @@
 {
-  "expectation_suite_name": "my_profiler_suite",
+  "expectation_suite_name": "data_profiler_assistant_suite",
   "ge_cloud_id": null,
   "expectations": [
     {
@@ -7,16 +7,6 @@
       "kwargs": {
         "min_value": 24,
         "max_value": 24
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "metric_name": "table.row_count",
-            "domain_kwargs": {},
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1
-        }
       }
     },
     {
@@ -24,167 +14,70 @@
       "kwargs": {
         "exact_match": null,
         "column_set": [
-          "id",
+          "transaction_date",
           "client_id",
           "currency_id",
-          "bank_id",
           "amount",
-          "transaction_date"
+          "id",
+          "bank_id"
         ]
-      },
-      "meta": {
-        "profiler_details": {
-          "success_ratio": 1.0
-        }
       }
     },
     {
       "expectation_type": "expect_column_values_to_be_unique",
       "kwargs": {
         "column": "id"
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "metric_name": "column_values.unique.unexpected_count",
-            "domain_kwargs": {
-              "column": "id"
-            },
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1
-        }
-      }
-    },
-    {
-      "expectation_type": "expect_column_values_to_be_unique",
-      "kwargs": {
-        "column": "transaction_date"
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "metric_name": "column_values.unique.unexpected_count",
-            "domain_kwargs": {
-              "column": "transaction_date"
-            },
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1
-        }
       }
     },
     {
       "expectation_type": "expect_column_values_to_not_be_null",
       "kwargs": {
         "column": "id"
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "metric_name": "column_values.nonnull.unexpected_count",
-            "domain_kwargs": {
-              "column": "id"
-            },
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1
-        }
       }
     },
     {
       "expectation_type": "expect_column_values_to_not_be_null",
       "kwargs": {
         "column": "transaction_date"
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "metric_name": "column_values.nonnull.unexpected_count",
-            "domain_kwargs": {
-              "column": "transaction_date"
-            },
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1
-        }
       }
     },
     {
-      "expectation_type": "expect_column_values_to_be_in_set",
+      "expectation_type": "expect_column_min_to_be_between",
       "kwargs": {
-        "column": "transaction_date",
-        "mostly": 1.0,
-        "value_set": [
-          "2022-12-10",
-          "2023-02-23",
-          "2023-07-22",
-          "2023-08-27",
-          "2023-01-21",
-          "2023-03-27",
-          "2022-12-03",
-          "2022-11-02",
-          "2023-05-15",
-          "2023-07-26",
-          "2023-04-14",
-          "2022-12-05",
-          "2023-08-22",
-          "2023-09-01",
-          "2023-02-08",
-          "2023-09-09",
-          "2023-01-20",
-          "2023-04-03",
-          "2022-10-31",
-          "2023-06-19",
-          "2023-07-09",
-          "2023-05-03",
-          "2022-11-04",
-          "2023-08-31"
-        ]
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "metric_name": "column.distinct_values",
-            "domain_kwargs": {
-              "column": "transaction_date"
-            },
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1,
-          "parse_strings_as_datetimes": false
-        }
+        "strict_min": false,
+        "column": "id",
+        "strict_max": false,
+        "min_value": 1,
+        "max_value": 1
+      }
+    },
+    {
+      "expectation_type": "expect_column_max_to_be_between",
+      "kwargs": {
+        "strict_min": false,
+        "column": "id",
+        "strict_max": false,
+        "min_value": 24,
+        "max_value": 24
       }
     },
     {
       "expectation_type": "expect_column_unique_value_count_to_be_between",
       "kwargs": {
-        "min_value": 24,
-        "max_value": 24,
-        "strict_max": false,
+        "strict_min": false,
         "column": "transaction_date",
-        "strict_min": false
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "metric_name": "column.distinct_values.count",
-            "domain_kwargs": {
-              "column": "transaction_date"
-            },
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1
-        }
+        "strict_max": false,
+        "min_value": 23,
+        "max_value": 23
       }
     }
   ],
   "data_asset_type": null,
   "meta": {
-    "great_expectations_version": "0.17.22",
+    "great_expectations_version": "0.18.1",
     "citations": [
       {
-        "citation_date": "2023-10-19T13:57:05.540905Z",
+        "citation_date": "2023-11-10T18:13:15.888331Z",
         "comment": "Created by effective Rule-Based Profiler of OnboardingDataAssistant with the configuration included.\n"
       }
     ]

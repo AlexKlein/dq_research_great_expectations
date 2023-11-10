@@ -1,127 +1,108 @@
 {
-  "data_asset_type": "Dataset",
-  "expectation_suite_name": "dim_currencies_custom_suit",
-  "!custom_query": "select dc.* from financial.dim_currencies dc left join  financial.fact_bank_transactions fba on fba.currency_id + 1 = dc.id where fba.id is null;",
-  "!filter": "currency_name not in ('EUR', 'USD', 'GBP')",
+  "expectation_suite_name": "data_profiler_assistant_suite",
+  "ge_cloud_id": null,
+  "!custom_query": "select dc.* from financial.dim_currencies dc left join financial.fact_bank_transactions fba on fba.currency_id + 1 = dc.id where fba.id is null",
+  "!custom_filter": "currency_name not in ('EUR', 'USD', 'GBP')",
   "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "min_value": 5,
+        "max_value": 5
+      }
+    },
     {
       "expectation_type": "expect_table_columns_to_match_set",
       "kwargs": {
+        "exact_match": null,
         "column_set": [
-          "currency_name",
-          "id"
-        ],
-        "exact_match": null
-      },
-      "meta": {
-        "profiler_details": {
-          "success_ratio": 1.0
-        }
+          "id",
+          "currency_name"
+        ]
       }
     },
     {
       "expectation_type": "expect_column_values_to_be_unique",
       "kwargs": {
         "column": "id"
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "metric_name": "column_values.unique.unexpected_count",
-            "domain_kwargs": {
-              "column": "id"
-            },
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1
-        }
       }
     },
     {
       "expectation_type": "expect_column_values_to_be_unique",
       "kwargs": {
         "column": "currency_name"
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "metric_name": "column_values.unique.unexpected_count",
-            "domain_kwargs": {
-              "column": "currency_name"
-            },
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1
-        }
       }
     },
     {
       "expectation_type": "expect_column_values_to_not_be_null",
       "kwargs": {
         "column": "id"
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "metric_name": "column_values.nonnull.unexpected_count",
-            "domain_kwargs": {
-              "column": "id"
-            },
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1
-        }
       }
     },
     {
       "expectation_type": "expect_column_values_to_not_be_null",
       "kwargs": {
         "column": "currency_name"
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "metric_name": "column_values.nonnull.unexpected_count",
-            "domain_kwargs": {
-              "column": "currency_name"
-            },
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1
-        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_min_to_be_between",
+      "kwargs": {
+        "min_value": 1,
+        "strict_min": false,
+        "column": "id",
+        "strict_max": false,
+        "max_value": 1
+      }
+    },
+    {
+      "expectation_type": "expect_column_max_to_be_between",
+      "kwargs": {
+        "min_value": 5,
+        "strict_min": false,
+        "column": "id",
+        "strict_max": false,
+        "max_value": 5
       }
     },
     {
       "expectation_type": "expect_column_value_lengths_to_be_between",
       "kwargs": {
         "min_value": 3,
-        "max_value": 3,
-        "column": "currency_name"
-      },
-      "meta": {
-        "profiler_details": {
-          "column_min_length_range_estimator": {
-            "metric_configuration": {
-              "metric_name": "column_values.length.min",
-              "domain_kwargs": {
-                "column": "currency_name"
-              },
-              "metric_value_kwargs": null
-            },
-            "num_batches": 1
-          },
-          "column_max_length_range_estimator": {
-            "metric_configuration": {
-              "metric_name": "column_values.length.max",
-              "domain_kwargs": {
-                "column": "currency_name"
-              },
-              "metric_value_kwargs": null
-            },
-            "num_batches": 1
-          }
-        }
+        "mostly": 1.0,
+        "strict_min": false,
+        "column": "currency_name",
+        "strict_max": false,
+        "max_value": 3
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_match_regex",
+      "kwargs": {
+        "mostly": 1.0,
+        "column": "currency_name",
+        "regex": "[A-Za-z0-9\\.,;:!?()\\\"'%\\-]+"
+      }
+    },
+    {
+      "expectation_type": "expect_column_unique_value_count_to_be_between",
+      "kwargs": {
+        "min_value": 5,
+        "strict_min": false,
+        "column": "currency_name",
+        "strict_max": false,
+        "max_value": 5
       }
     }
-  ]
+  ],
+  "data_asset_type": null,
+  "meta": {
+    "great_expectations_version": "0.18.1",
+    "citations": [
+      {
+        "citation_date": "2023-11-10T17:51:33.122480Z",
+        "comment": "Created by effective Rule-Based Profiler of OnboardingDataAssistant with the configuration included.\n"
+      }
+    ]
+  }
 }

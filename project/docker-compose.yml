@@ -1,4 +1,27 @@
 version: '3.8'
+
+x-airflow-common: &airflow-common
+  build:
+    context: .
+    dockerfile: Dockerfile
+  environment: &airflow-environment
+    AIRFLOW__CORE__REMOTE_LOGGING: 'False'
+    AIRFLOW__CORE__BASE_LOG_FOLDER: '/opt/airflow/logs'
+    AIRFLOW__CORE__DAGS_FOLDER: '/opt/airflow/dags'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__WEBSERVER__BASE_URL: http://localhost:8080
+  env_file:
+    - local.env
+  restart: always
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./db_generator:/opt/airflow/db_generator
+    - ./great_expectations:/opt/airflow/great_expectations
+    - ./logs:/opt/airflow/logs
+    - ./plugins:/opt/airflow/plugins
+    - ./profilers:/opt/airflow/profilers
+
 services:
   my_small_dwh:
     image: postgres:13
@@ -27,25 +50,14 @@ services:
       start_period: 5s
 
   airflow-webserver:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    <<: *airflow-common
     environment:
-      AIRFLOW__CORE__REMOTE_LOGGING: 'False'
-      AIRFLOW__CORE__BASE_LOG_FOLDER: '/opt/airflow/logs'
-      AIRFLOW__CORE__DAGS_FOLDER: '/opt/airflow/dags'
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
-      AIRFLOW__CORE__EXECUTOR: 'LocalExecutor'
+      <<: *airflow-environment
+      AIRFLOW__CORE__EXECUTOR: "LocalExecutor"
       AIRFLOW__CORE__PARALLELISM: 8
       AIRFLOW__CORE__DAG_CONCURRENCY: 8
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      AIRFLOW__WEBSERVER__BASE_URL: http://localhost:8080
-      MY_SMALL_DWH_SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@my_small_dwh:5432/postgres
-      PYTHONPATH: "$${PYTHONPATH}:/opt/airflow/great_expectations"
-      RUN_ENV: Docker
     ports:
       - "8080:8080"
-    restart: always
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
@@ -55,43 +67,18 @@ services:
     depends_on:
       - postgres
       - my_small_dwh
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ./plugins:/opt/airflow/plugins
-      - ./logs:/opt/airflow/logs
-      - ./profilers:/opt/airflow/profilers
-      - ./db_generator:/opt/airflow/db_generator
-      - ./great_expectations:/opt/airflow/great_expectations
     command: webserver
 
   airflow-scheduler:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: always
+    <<: *airflow-common
+    environment:
+      <<: *airflow-environment
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 30s
-    environment:
-      AIRFLOW__CORE__REMOTE_LOGGING: 'False'
-      AIRFLOW__CORE__BASE_LOG_FOLDER: '/opt/airflow/logs'
-      AIRFLOW__CORE__DAGS_FOLDER: '/opt/airflow/dags'
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      AIRFLOW__WEBSERVER__BASE_URL: http://localhost:8080
-      MY_SMALL_DWH_SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@my_small_dwh:5432/postgres
-      PYTHONPATH: "$${PYTHONPATH}:/opt/airflow/great_expectations"
-      RUN_ENV: Docker
     depends_on:
       - airflow-webserver
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ./plugins:/opt/airflow/plugins
-      - ./logs:/opt/airflow/logs
-      - ./profilers:/opt/airflow/profilers
-      - ./db_generator:/opt/airflow/db_generator
-      - ./great_expectations:/opt/airflow/great_expectations
     command: scheduler
