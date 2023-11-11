@@ -1,0 +1,12 @@
+{
+  "commands": {
+    "commit-message": {
+      "description": "Commit message for current changes",
+      "prompt": "Suggest an informative commit message by summarizing code changes from the shared command output. The commit message should follow the conventional commit format and provide meaningful context for future readers.",
+      "context": {
+        "selection": false,
+        "command": "git diff --cached"
+      }
+    }
+  }
+}
