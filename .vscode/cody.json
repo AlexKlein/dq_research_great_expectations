@@ -1,0 +1,20 @@
+{
+  "commands": {
+    "commit-message": {
+      "description": "Commit message for current changes",
+      "prompt": "Suggest an informative commit message by summarizing code changes from the shared command output. The commit message should follow the conventional commit format and provide meaningful context for future readers.",
+      "context": {
+        "selection": false,
+        "command": "git diff --cached"
+      }
+    },
+    "merge-request-description": {      
+      "description": "Generate a Pull Request description from detailed commits on the current feature branch against the default branch",
+      "prompt": "Generate a GitHub Pull Request description based on the following detailed commits since the divergence from the default branch. Merge request should have a relevant title and a body summarizing the key changes from each commit in a human-readable way. Format the body with Markdown headings and paragraphs as needed, present the formatted body in one code block. Do not include trivial commits like reverts or formatting changes in the summary.",
+      "context": {
+        "command": "git fetch && git log $(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)..HEAD --pretty=format:'%h - %an: %s%n%b' --reverse",
+        "selection": false
+      }
+    }
+  }
+}
