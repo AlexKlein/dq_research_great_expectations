@@ -15,7 +15,7 @@ def create_database_connection():
     return conn
 
 
-def setup_marine_database(cur):
+def setup_marine_schema(cur):
     """Create the necessary schema and tables in the marine database."""
     cur.execute('''
         CREATE SCHEMA IF NOT EXISTS marine;
@@ -91,7 +91,7 @@ def insert_marine_sample_data(cur):
         ''', (ship_type_id, origin_city_id, destination_city_id, company_id, travel_date, distance_travelled))
 
 
-def setup_financial_database(cur):
+def setup_financial_schema(cur):
     """Create the necessary schema and tables in the financial database."""
     cur.execute('''
         CREATE SCHEMA IF NOT EXISTS financial;
@@ -204,18 +204,48 @@ def setup_data_quality_schema(cur):
     ''')
 
 
+def setup_migration_schema(cur):
+    """Create the schema and tables for data migration."""
+    cur.execute('''
+        CREATE SCHEMA IF NOT EXISTS migration;
+    ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS migration.fact_ship_travels (
+            id SERIAL PRIMARY KEY,
+            ship_type_id INTEGER REFERENCES marine.dim_ship_types(id),
+            origin_city_id INTEGER REFERENCES marine.dim_cities(id),
+            destination_city_id INTEGER REFERENCES marine.dim_cities(id),
+            company_id INTEGER REFERENCES marine.dim_companies(id),
+            travel_date DATE,
+            distance_travelled NUMERIC(10,2)  -- Distance in miles or km
+        );
+        ''')
+
+def insert_migration_data(cur):
+    """Insert data into the migration table."""
+    cur.execute('''
+        INSERT INTO migration.fact_ship_travels (ship_type_id, origin_city_id, destination_city_id, company_id, travel_date, distance_travelled)
+        SELECT ship_type_id, origin_city_id, destination_city_id, company_id, travel_date, distance_travelled
+        FROM   marine.fact_ship_travels;
+    ''')
+
+
+
 def start_generation():
     """Main function to generate the sample data in the database."""
     conn = create_database_connection()
     cur = conn.cursor()
 
-    setup_marine_database(cur)
+    setup_marine_schema(cur)
     insert_marine_sample_data(cur)
 
-    setup_financial_database(cur)
+    setup_financial_schema(cur)
     insert_financial_sample_data(cur)
 
     setup_data_quality_schema(cur)
+
+    setup_migration_schema(cur)
+    insert_migration_data(cur)
 
     conn.commit()
     cur.close()

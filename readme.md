@@ -99,6 +99,28 @@ Please note that the `custom_query` and `custom_filter` in the example file are 
 
 Upon completing the validation, the results are automatically inserted into a PostgreSQL table, as specified in the [local.env](./project/local.env) file.
 
+#### DAG Configuration (`gx_run_comparison`)
+
+- **DAG ID:** `gx_run_comparison`
+- **Schedule:** Configured to run at 8:30 AM every Monday.
+
+#### Key Components
+
+1. **GXRunComparisonOperator**: This [operator](./project/plugins/gx_run_comparison_operator.py) orchestrates the comparison between two data tables.
+2. **Configuration File**: The [comparison_config.yml](./project/great_expectations/comparisons/comparison_config.yml) file contains configuration details for the data tables to be compared. It specifies the instance ID, schema, table names, and source and target storage types (e.g., PostgreSQL, Redshift, etc.).
+3. **Dynamic Importing**: The [operator](./project/plugins/gx_run_comparison_operator.py) dynamically imports necessary modules and functions to execute the comparison process.
+4. **Data Profiling and Validation**: The [operator](./project/plugins/gx_run_comparison_operator.py) [profiles](./project/plugins/run_expectations_plugin.py) the source table data and then applies these expectations to the target table, ensuring the migration's correctness.
+
+#### Process Flow
+
+1. **Data Profiling**: The source table data is profiled to generate expectations.
+2. **Expectations Application**: These expectations are then applied to the target table.
+3. **Comparison Execution**: The operator handles various scenarios, such as comparing tables within the same database or across different databases.
+
+#### Prerequisites and Configuration
+
+**Configuration File**: Update the [comparison_config.yml](./project/great_expectations/comparisons/comparison_config.yml) file with the correct details of the tables you want to compare.
+
 ## List of tables
 
 ```sql
@@ -115,6 +137,9 @@ select * from financial.dim_clients;
 select * from financial.dim_cargo_types;
 select * from financial.fact_bank_transactions;
 select * from financial.fact_cargo_amounts;
+
+-- Migrated data
+select * from migration.fact_ship_travels;
 
 -- Data Quality Results
 select * from data_quality.gx_validation_results;

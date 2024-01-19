@@ -152,3 +152,17 @@ def execute_sql_statements(cur, sql_statements):
             results.append({"statement": statement, "status": str(e)})
 
     return results
+
+
+def ingest_results_into_database(cur, validation_results, schema, table):
+    """Ingest the results into the database."""
+    parsed_results = parse_gx_result(validation_results)
+    insert_statements = generate_sql_inserts(parsed_results, schema, table)
+
+    execution_results = execute_sql_statements(cur, insert_statements)
+
+    for result in execution_results:
+        if result["status"] == "SUCCESS":
+            print(f"Executed: {result['statement'][:100]}... SUCCESS")
+        else:
+            print(f"Failed: {result['statement'][:100]}... {result['status']}")

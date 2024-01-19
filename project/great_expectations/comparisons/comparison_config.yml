@@ -1,0 +1,13 @@
+- instance_id: postgres
+  storages:
+    - type:
+        source: postgres
+        target: postgres
+      compared_pairs:
+        - check_name: pg_to_pg_fact_ship_travels
+          source_schema: marine
+          source_table: fact_ship_travels
+          source_custom_filter: "travel_date > CURRENT_DATE - interval '1 year'"
+          target_schema: migration
+          target_table: fact_ship_travels
+          target_custom_filter: "travel_date > CURRENT_DATE - interval '1 year'"

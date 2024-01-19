@@ -11,8 +11,15 @@ LIMIT_OF_VALIDATED_ROWS = os.environ.get("LIMIT_OF_VALIDATED_ROWS")
 
 MY_SMALL_DWH_SQL_ALCHEMY_CONN = os.environ.get("MY_SMALL_DWH_SQL_ALCHEMY_CONN")
 
+INCLUDE_EXPECTATION_TYPES = [
+    "expect_table_row_count_to_be_between",
+    "expect_table_columns_to_match_set",
+    "expect_column_values_to_be_unique",
+    "expect_column_values_to_not_be_null",
+]
 
-def setup_datasource(context):
+
+def setup_pg_datasource(context):
     """Setup the Great Expectations datasource."""
     datasource_config = {
         "name": "expectations_launcher_datasource",
@@ -59,7 +66,7 @@ def generate_sql_query(schema, table, custom_query=None, custom_filter=None):
     return sql_query
 
 
-def create_batch_request(schema, table, custom_query=None, custom_filter=None):
+def create_pg_batch_request(schema, table, custom_query=None, custom_filter=None):
     """Convert an SQL query to a batch request."""
     sql_query = generate_sql_query(schema, table, custom_query, custom_filter)
 
@@ -71,6 +78,25 @@ def create_batch_request(schema, table, custom_query=None, custom_filter=None):
         batch_identifiers={"default_identifier_name": "expectations_launcher_identifier"},
         batch_spec_passthrough={"create_temp_table": False}
     )
+
+
+def profile_initial_data(context, batch_request, suite_name):
+    """Profile data for a given batch_request."""
+    data_assistant_result = context.assistants.onboarding.run(
+        batch_request=batch_request,
+    )
+    expectation_suite = data_assistant_result.get_expectation_suite(
+        expectation_suite_name=suite_name
+    )
+
+    expectations = expectation_suite.expectations
+    filtered_expectations = [
+        exp for exp in expectations if exp.expectation_type in INCLUDE_EXPECTATION_TYPES
+    ]
+    expectation_suite.expectations = filtered_expectations
+
+    context.add_or_update_expectation_suite(expectation_suite=expectation_suite)
+    context.save_expectation_suite(expectation_suite)
 
 
 def create_and_run_checkpoint(context, batch_request, suite_name):

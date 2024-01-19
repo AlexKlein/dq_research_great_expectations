@@ -1,5 +1,5 @@
 # Use Apache Airflow as the base image
-FROM apache/airflow:2.7.1
+FROM apache/airflow:2.7.3
 
 # Developer and maintainer of the project
 LABEL maintainer="Aleksandr Klein"

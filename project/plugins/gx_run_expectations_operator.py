@@ -33,7 +33,7 @@ class GXRunExpectationsOperator(BaseOperator):
             custom_expectations = file_plugin.load_custom_expectations(expectations_path)
 
             validation_results = self._process_and_run_expectations(context, custom_expectations, schema, table)
-            self._ingest_results_into_database(cur, validation_results, schema, table)
+            validations_plugin.ingest_results_into_database(cur, validation_results, schema, table)
 
         conn.commit()
         cur.close()
@@ -48,29 +48,16 @@ class GXRunExpectationsOperator(BaseOperator):
         expectation_plugin.update_suite_expectations(suite, custom_expectations['expectations'])
         context.save_expectation_suite(suite)
 
-        batch_request = expectation_plugin.create_batch_request(
+        batch_request = expectation_plugin.create_pg_batch_request(
             schema=schema,
             table=table,
             custom_query=custom_query,
             custom_filter=custom_filter
         )
-        expectation_plugin.setup_datasource(context)
+        expectation_plugin.setup_pg_datasource(context)
 
         return expectation_plugin.create_and_run_checkpoint(
             context=context,
             batch_request=batch_request,
             suite_name=self.suite_name,
         )
-
-    def _ingest_results_into_database(self, cur, validation_results, schema, table):
-        """Ingest the results into the database."""
-        parsed_results = validations_plugin.parse_gx_result(validation_results)
-        insert_statements = validations_plugin.generate_sql_inserts(parsed_results, schema, table)
-
-        execution_results = validations_plugin.execute_sql_statements(cur, insert_statements)
-
-        for result in execution_results:
-            if result["status"] == "SUCCESS":
-                self.log.info(f"Executed: {result['statement'][:100]}... SUCCESS")
-            else:
-                self.log.error(f"Failed: {result['statement'][:100]}... {result['status']}")
